@@ -1,9 +1,2 @@
-Conpressed_mutation/
-output
-CCLE/
-untitled.txt
-__pycache__/
-未命名.ipynb
-comp_3.csv
-.ipynb_checkpoints/
-
+files/
+code/__pycache__
