@@ -120,7 +120,7 @@ def variants_extractor(vcf_path, Interval, acc_id, gzipped=False):
         return gzip.open(file, 'rt') if gzipped else open(file, 'r')
 
 
-    f= '{vcf_path}/{acc_id}.1.new.{chrom}.output.g.vcf{extention}'.format(vcf_path =  vcf_path,
+    f= '{vcf_path}/{acc_id}.{chrom}.output.g.filtered.vcf{extention}'.format(vcf_path =  vcf_path,
                                                                   acc_id = acc_id,
                                                                   chrom = Interval.chrom,
                                                                   extention = '.gz' if gzipped else '')
@@ -179,8 +179,8 @@ class Gene:
         self.name = name
         self.seq_type = seq_type
         self.chrom = chr
-        self.start = int(start) - 1
-        self.end = int(end) - 1
+        self.start = (int(start) - 1)
+        self.end = (int(end) - 1)
         self.strand = strand
         self.info = attri
         self.down_border = down_border -1
