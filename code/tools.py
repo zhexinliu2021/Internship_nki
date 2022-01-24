@@ -9,13 +9,13 @@ import math
 import matplotlib.pyplot as plt
 import warnings
 from functools import reduce
+#--------- above for baseline -----------------------------#
+
 
 def write_file(df, name, path):
     df.to_csv(path + name)
 
-
-
-
+    
 def split_task(total_n, n_jobs):
     """
     :param total_n:
@@ -30,3 +30,32 @@ def split_task(total_n, n_jobs):
     aug = np.array([n_row*n_col]*(total_n%n_jobs))+np.arange(total_n%n_jobs)
     index.append(aug)
     return(index)
+
+
+def get_cons(*items, method='inter'):
+    """return the intersection or union of multiple
+    lists. method =inter / union
+    output type: set"""
+
+    # make them all the set types
+    set_items = []
+    for i, genes in enumerate(items):
+        if len(genes) == len(set(genes)):
+            set_items.append(set(genes))
+        else:
+            return ('WARNING: the {}th gene set contains duplicate genes.'.format(i + 1))
+
+    num = len(items)
+    cur_list = []
+    cur_index = None
+    for i, genes in enumerate(set_items):
+        if cur_index == None:
+            cur_list = genes;
+            cur_index = i
+            continue
+        else:
+            if method == 'inter': cur_list = cur_list.intersection(genes)
+            if method == 'union': cur_list = cur_list.union(genes)
+            cur_index = i
+    return (cur_list)
+
