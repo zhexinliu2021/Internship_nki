@@ -4,3 +4,6 @@ code/__pycache__
 code/figures
 code/other_code
 code/other_files
+.DS_Store
+code/.DS_Store
+code/.idea/
