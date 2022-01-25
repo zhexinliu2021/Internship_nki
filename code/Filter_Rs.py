@@ -2,6 +2,7 @@
 import argparse
 import pandas as pd
 import numpy as np
+import gzip
 #from tqdm import tqdm
 
 #usage: Python3 Filter_Rs.py -i xxx.vcf -o output_file
@@ -10,8 +11,13 @@ import numpy as np
 
 
 def main():
-    vcf_i = open(in_dir, 'r')
-    vcf_o = open(out_dir, 'w')
+
+    def _open(file):
+        return gzip.open(file,'rt') if file.endswith('.gz') else open(file, 'r')
+
+
+    vcf_i = _open(in_dir)
+    vcf_o = gzip.open(out_dir, 'wb')
     fields = ''
     chr_list = []; ratio_list = []
 
@@ -19,13 +25,15 @@ def main():
 
         filterd = 'yes'
         if line.startswith("#CHROM"):
-            fields = line[1:].split(); filterd = 'no' # dont filter headers
+
+            fields = line[1:].split("\t"); filterd = 'no' # dont filter headers
             #print(fields)
             #print(line_index)
         elif line.startswith('##'): filterd = 'no'; #print(line_index)
         elif not line.startswith('#CHROM') and not line.startswith('##') :
+            format = fields[-2]; Gt = fields[-1]
             mapping = dict(list(zip(fields,line.split())))
-            gt_map = dict(list(zip(mapping['FORMAT'].split(":"), mapping['DAN-G'].split(":"))))
+            gt_map = dict(list(zip(mapping[format].split(":"), mapping[Gt].split(":"))))
             # CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	DAN-G
             #GT: AD:DP: GQ:PL      0 / 1: 6, 4: 10:99: 105, 0, 218
             # step.1: if the number of reads is enough
@@ -51,7 +59,8 @@ def main():
                 # if it is a indel and has reads >= min_AD, and model turned on, then don't filter the allel
             #print(line_index)
         #write to output file
-        if filterd == 'no': vcf_o.write(line)
+        if filterd == 'no': vcf_o.write(line.encode("ascii"))
+        #f.write(content.encode("ascii"))
     vcf_o.close()
     if r_file :
         df = pd.DataFrame({'CHR':np.array(chr_list), 'Aellel_ratio' : np.array(ratio_list) })
@@ -75,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument("-i", "--input", type=str,
                         help= "Input vcf file's dir")
     parser.add_argument("-o","--output", type = str,
-                        help= "output vcf file's dir")
+                        help= "output vcf file's dir (gzip file)")
     parser.add_argument('-r', "--reads_file", action="store_true", default=False,
                         help='file contains A_reads/total_reads')
 
