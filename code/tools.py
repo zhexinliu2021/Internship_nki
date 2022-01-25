@@ -15,6 +15,7 @@ from functools import reduce
 def write_file(df, name, path):
     df.to_csv(path + name)
 
+
     
 def split_task(total_n, n_jobs):
     """
