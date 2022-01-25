@@ -1,3 +1,6 @@
 files/
 code/__pycache__
 .ipynb_checkpoints/
+code/figures
+code/other_code
+code/other_files
