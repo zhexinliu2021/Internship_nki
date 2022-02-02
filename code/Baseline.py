@@ -1,8 +1,10 @@
+# This is the implementation of modeling coding mutations
+# to predict drug response (AUC) in CCLE dataset.
+# Data: 1/2/2022
 
-# In[1]:
 
 
-#get_ipython().run_line_magic('matplotlib', 'inline')
+
 import pandas as pd
 import numpy as np 
 import os
