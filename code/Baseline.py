@@ -162,7 +162,7 @@ def out_loop(x, y_total, cl_id, out_cv_fold= 5):
         
         #return the best alpha-l1-ratio pair.
         op_l1_ratio, op_alpha = pd.Series(para_matrix).idxmax() 
-        warnings.warn('the best validation performance is: ', para_matrix[(op_l1_ratio, op_alpha)])
+        print('the best validation performance is: ', para_matrix[(op_l1_ratio, op_alpha)],  flush=True)
         
         #predict on the 5th-fold set (testing set)
         with warnings.catch_warnings():
