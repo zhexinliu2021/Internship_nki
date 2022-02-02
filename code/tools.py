@@ -9,6 +9,8 @@ import math
 import matplotlib.pyplot as plt
 import warnings
 from functools import reduce
+from sklearn import preprocessing
+
 #--------- above for baseline -----------------------------#
 
 
@@ -60,3 +62,27 @@ def get_cons(*items, method='inter'):
             cur_index = i
     return (cur_list)
 
+
+
+def normalize(np_array):
+    min_max_scaler = preprocessing.MinMaxScaler()
+    x_scaled = min_max_scaler.fit_transform(np_array)
+    return x_scaled
+
+def scal_matrix(m_file_notna):
+    scaler = preprocessing.StandardScaler().fit(m_file_notna)
+    X_scaled = scaler.transform(m_file_notna)
+    norm_m_file = pd.DataFrame(X_scaled, columns=m_file_notna.columns, index = m_file_notna.index)
+    return norm_m_file
+
+
+def trans_genes(m, Con_ids, gene_bankmap):
+    """
+    During proprocessing, take the intersection of the COSMIC list
+    and mutation's gene list;
+    gene_bankmap: mapping the name from COSIMIC to CCLE's genes' names.
+    """
+    gene_list = m.columns.map(lambda x:x.split(' ')[0])
+    final_genes = get_cons(gene_list, Con_ids , method= 'inter')
+    final_genes = [f"{gene} {gene_bankmap[gene]}" for gene in final_genes ]
+    return m.loc[:,final_genes]
