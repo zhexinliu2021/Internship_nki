@@ -15,14 +15,6 @@ import seaborn as sns
 
 
 
-
-
-
-
-
-
-
-
 class Enformer:
 
     def __init__(self, tfhub_url):

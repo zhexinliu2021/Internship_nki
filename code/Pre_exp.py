@@ -1,5 +1,5 @@
 # /usr/bin/python3
-#usage: python3 Pre_exp.py -i acc_id -o output
+# usage: python3 Pre_exp.py -i acc_id -o output
 # Using Enformer ( Avsec, Žiga et al.) to predict the gene expression profile 
 # of non-coding DNAs of cancer genes. 
 # Date: 1/2/2022
