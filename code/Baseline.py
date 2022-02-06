@@ -347,8 +347,8 @@ def main():
 
     # STEP 3. ---> process drug labels <---
     # get rid of drugs with too many missing values.
-    thresh  = int(m_file.shape[0]*(0.60)) ## at least 80% of Non-na value in each drug
-    drug_df = drug_data.loc[m_file.index,:].dropna(axis = 1, thresh = thresh)
+    thresh = int(m_file.shape[0] * (0.60))  ## at least 80% of Non-na value in each drug
+    drug_df = drug_data.loc[m_file.index, :].dropna(axis=1, thresh=thresh)
     print(f'before filtering drugs: the number of drugs is {drug_data.shape[1]}', flush=True)
     print(f'after filtering, the number of drugs is {drug_df.shape[1]}', flush=True)
     print(f'Shape of drug data: {drug_df.shape}', flush=True)
