@@ -1,12 +1,25 @@
+# THis software can let you take input a VCF file
+# and filter out allels that have less alt reads
+# or total reads covery. Usage as below
+# Date: 11/02/2022
+
+# usage: Filter_Rs.py [-h] [-i INPUT] [-o OUTPUT] [-r] [-S] [-IN]
+# optional arguments:
+#   -h, --help            show this help message and exit
+#   -i INPUT, --input INPUT
+#                         Input vcf file's dir
+#   -o OUTPUT, --output OUTPUT
+#                         output vcf file's dir (gzip file)
+#   -r, --reads_file      file contains A_reads/total_reads
+#   -S, --SNP             flag indicating whether to call snps
+#   -IN, --INDELS         flag indicating whether to call indels
+
 # /usr/bin/python3
 import argparse
 import pandas as pd
 import numpy as np
 import gzip
 #from tqdm import tqdm
-
-#usage: Python3 Filter_Rs.py -i xxx.vcf -o output_file
-
 
 
 
