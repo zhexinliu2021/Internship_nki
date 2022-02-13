@@ -1,4 +1,13 @@
 # /usr/bin/python3
+# main functions and dataclasses for
+# generating DNA  sequences with variant
+# coordinates  and reference genome. Also
+# include useful utility function for
+# preprocessing the input files.
+# Date: 15/01/2022
+# Author: Zhexin Liu
+
+
 import gzip
 import kipoiseq
 import re
@@ -13,6 +22,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
 #----------- for prediction of expression -----------------#
+
+
 
 def get_cons(*items, method='inter'):
     """return the intersection or union of multiple
