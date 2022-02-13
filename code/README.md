@@ -1,1 +1,1 @@
-![Alt text](md_fig/workflow.pdf?raw=true "Table1") 
+![Alt text](md_fig/workflow.png?raw=true "Table1") 
