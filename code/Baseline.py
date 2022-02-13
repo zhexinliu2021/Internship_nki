@@ -40,7 +40,6 @@ warnings.filterwarnings('always')
 
 
 # SET FILE PATHS
-
 path = '/home/lzhexin/job_scripts/baseline/CCLE/mutation_files/' # dir contains mutation data
 
 file_list = ['damaging','hotspot','nonconserving','otherconserving'] # four mutation vectors
@@ -52,8 +51,6 @@ sample_info = "/CCLE/sample_info.csv"
 
 
 # In[3]:
-
-
 # **Source of the data**:
 # Mutation vectors: https://depmap.org/portal/download/    (version: Depmap Public 2021Q4 )
 # Drug response data: https://depmap.org/portal/download/   (CUSTOMS DOWNLOADS -> compound 
@@ -338,20 +335,6 @@ def main():
     (m_file == 1).sum().plot.hist(bins = 50)
     print(m_file.shape, flush=True)
 
-
-    # In[ ]:
-
-
-    # STEP 2.2 ---> merge mutation files <---
-    # m_file = merge_mt(merge_mt(m_f1, m_f2, drug_id=drug_data.index), m_f3,
-    #                   drug_id= drug_data.index,gene_filter=False)      # Merge m_f1, m_f2, m_f3 CCLE
-    # #                                                                    # mutation metrices.
-    #
-    # print('#### merging mutation files completed')
-    #
-    # m_file = m_file.loc[:,final_genes] # Now we take selected 710 genes.
-    # print(m_file.shape)
-    # m_file.head()
 
 
     # In[22]:
