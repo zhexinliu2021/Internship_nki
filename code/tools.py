@@ -1,3 +1,7 @@
+# Useful utility functions for preprocessing
+# the input mutation files.
+# Date: 11/02/2022
+
 import pandas as pd; import numpy as np
 import os
 from sklearn.utils import resample
