@@ -1,8 +1,20 @@
-# This is the implementation of modeling coding mutations
-# to predict drug response (AUC) in CCLE dataset.
+# This is the implementation of
+# modeling coding mutations using
+# ElasticNet to predict drug response
+# (AUC) in CCLE dataset.
 # Data: 1/2/2022
 
 
+# usage: Baseline.py [-h] [-t TARGET_INDEX] [-o OUTPUT] [-p R_PATH]
+#
+# optional arguments:
+#   -h, --help            show this help message and exit
+#   -t TARGET_INDEX, --target_index TARGET_INDEX
+#                         target index (1-based). 1-494
+#   -o OUTPUT, --output OUTPUT
+#                         output file's dir
+#   -p R_PATH, --r_path R_PATH
+#                         obsolute path on scratch
 
 
 import pandas as pd
