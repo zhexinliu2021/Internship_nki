@@ -1,3 +1,9 @@
+# Enformer model blocks adopted and
+# used to predict gene expression
+# profiles from DNA sequences.
+# Date: 11/02/2022
+# author:Zhexin Liu
+
 import numpy as np
 import pandas as pd
 import gzip
@@ -13,10 +19,7 @@ import matplotlib as mpl
 import seaborn as sns
 
 
-
-
 class Enformer:
-
     def __init__(self, tfhub_url):
         self._model = hub.load(tfhub_url).model
 
