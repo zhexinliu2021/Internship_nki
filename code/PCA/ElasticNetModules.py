@@ -1,3 +1,8 @@
+# Modules for the ElasticNet model
+# and model training and validation.
+# Date: 11/02/2022
+
+
 import pandas as pd
 import numpy as np
 import os
@@ -29,7 +34,7 @@ def EN_cv_in(x_train, y_train, fold, alpha, l1_ratio):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             regr = ElasticNet(random_state=random_, alpha=alpha, l1_ratio=l1_ratio,
-                              fit_intercept=False, max_iter= 3000)
+                              fit_intercept=False, max_iter=2000)
             regr.fit(x_train_in, y_train_in)
 
         y_pre = regr.predict(x_test_in)
@@ -78,7 +83,7 @@ def out_loop(x, y_total, cl_id, out_cv_fold=5):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             regr = ElasticNet(random_state=0, alpha=op_alpha, l1_ratio=l1_ratio,
-                              fit_intercept=False)
+                              fit_intercept=False, max_iter= 2000)
             regr.fit(x_train, y_train)
             y_pre = regr.predict(x_test)
 
@@ -100,7 +105,7 @@ def out_loop(x, y_total, cl_id, out_cv_fold=5):
     return (pre_y_array, per_test_list)
 
 
-def drug_model(m_file, target, out_path):
+def drug_model(m_file, target, out_path, norm_bool = True):
     """
     INPUT: m_file mutation matrix with unpreprocessed binery values.
     OUTPUT: mean prediction values of 10 iterations (TYPE: pd.Sereis).
@@ -115,10 +120,13 @@ def drug_model(m_file, target, out_path):
     # old normalization method:
     # norm_m_file = (m_file_notna - m_file_notna.mean(axis = 0)) / m_file_notna.std(axis = 0)
 
-    norm_m_file = tools.scal_matrix(m_file_notna)
-    #norm_m_file = m_file_notna
+    if norm_bool:
+        norm_m_file = tools.scal_matrix(m_file_notna)
+        print('### normalize with mean=0, std = 1.', flush=True)
+    elif not norm_bool:
+        norm_m_file = m_file_notna
+        print('### using raw data to fit model', flush=True)
 
-    print('### normalize with mean=0, std = 1.', flush=True)
     norm_m_file.dropna(axis=1, inplace=True)
     print('number of features selected {}'.format(norm_m_file.shape[1]), flush=True)
     print(f'Dimension of the final matrix: {norm_m_file.shape}')
@@ -132,7 +140,7 @@ def drug_model(m_file, target, out_path):
     Y_pre_array = pd.Series(dict(list(zip(cl_id, [[] for i in range(cl_id.shape[0])]))),
                             index=cl_id, name=drug_name)
     cv_result_list = []
-    for i in range(5):
+    for i in range(10):
         print('iteration {} begains'.format(i), flush=True)
         # resample 80% of data
         x, y_total = resample(X, Y_total, replace=False, n_samples=int(X.shape[0] * 0.95), random_state=i)
