@@ -47,7 +47,10 @@ def EN_cv_in(x_train, y_train, fold, alpha, l1_ratio):
     return (np.mean(cv_perf))
 
 
-def out_loop(x, y_total, cl_id, out_cv_fold=5):
+def out_loop(x, y_total, cl_id, out_cv_fold=5,
+             l1_ratio_list = np.linspace(start=0.2, stop=1.0, num=5) , verbose = True,
+             alpha_list =  np.array([math.exp(i) for i in np.arange(-15, 5, 2)]) ):
+
     ''' 5 fold cv (outter-loop)
     # x: (#_(80%)C, #_genes); y: (#_(80%)C,)
     FUNCTION: conduct 5-fold cross validation on the resampled data. In each iteration, conduct
@@ -63,10 +66,11 @@ def out_loop(x, y_total, cl_id, out_cv_fold=5):
         # 10-fold in x_train (inner-loop).
         # each pair of alpha and l1_ratio, do cross training to sellect best pair.
 
-        l1_ratio_list = np.linspace(start=0.2, stop=1.0, num=5)  # 10 values
+        #l1_ratio_list = np.linspace(start=0.2, stop=1.0, num=5)  # 10 values
         #l1_ratio_list  = np.linspace(start=1e-3, stop=0.2, num=5)
         #alpha_list = np.array([math.exp(i) for i in np.arange(-6, 5, 0.8)])  # 250 values
-        alpha_list =  np.array([math.exp(i) for i in np.arange(-15, 5, 2)])   #  values
+
+        #alpha_list =  np.array([math.exp(i) for i in np.arange(-15, 5, 2)])   #  values
         para_matrix = {(l1_ratio, alpha): 0 for l1_ratio in l1_ratio_list for alpha in alpha_list}
 
         for (l1_ratio, alpha) in para_matrix:
@@ -82,7 +86,7 @@ def out_loop(x, y_total, cl_id, out_cv_fold=5):
         # predict on the 5th-fold set (testing set)
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            regr = ElasticNet(random_state=0, alpha=op_alpha, l1_ratio=l1_ratio,
+            regr = ElasticNet(random_state=0, alpha=op_alpha, l1_ratio=op_l1_ratio,
                               fit_intercept=False, max_iter= 2000)
             regr.fit(x_train, y_train)
             y_pre = regr.predict(x_test)
@@ -94,10 +98,11 @@ def out_loop(x, y_total, cl_id, out_cv_fold=5):
         per_test = pd.Series(y_pre).corr(pd.Series(y_test), method='spearman')
         per_test_list.append(per_test)
         print('performance on the test set is:', per_test, flush=True)
-        plt.scatter(y_test, y_pre)
-        plt.xlabel('test set')
-        plt.ylabel('prediction')
-        plt.show()
+        if verbose:
+            plt.scatter(y_test, y_pre)
+            plt.xlabel('test set')
+            plt.ylabel('prediction')
+            plt.show()
         # break
     # add the prediction to the list.
     pre_y_array = pd.Series(pre_y_array).reindex(cl_id)
@@ -105,7 +110,11 @@ def out_loop(x, y_total, cl_id, out_cv_fold=5):
     return (pre_y_array, per_test_list)
 
 
-def drug_model(m_file, target, out_path, norm_bool = True):
+def drug_model(m_file, target, out_path, norm_bool = True,
+               l1_range= np.linspace(start=0.2, stop=1.0, num=5),
+               alpha_list=np.array([math.exp(i) for i in np.arange(-15, 5, 2)])
+               ):
+
     """
     INPUT: m_file mutation matrix with unpreprocessed binery values.
     OUTPUT: mean prediction values of 10 iterations (TYPE: pd.Sereis).
@@ -148,7 +157,9 @@ def drug_model(m_file, target, out_path, norm_bool = True):
         #print(y_total.isna().sum().sum(), flush=True)
 
         # outter loop with 5 fold cv.
-        prediction, cv_list = out_loop(x=x, y_total=y_total, cl_id=cl_id, out_cv_fold=5)
+        prediction, cv_list = out_loop(x=x, y_total=y_total, cl_id=cl_id, out_cv_fold=5, verbose= False,
+                                       l1_ratio_list = l1_range,
+                                       alpha_list = alpha_list)
         cv_result_list.extend(cv_list)
         print('iter {}, outter loop finished. '.format(i), flush=True)
 
