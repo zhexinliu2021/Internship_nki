@@ -36,19 +36,6 @@ warnings.filterwarnings('always')
 
 
 
-# In[2]:
-
-
-# SET FILE PATHS
-path = '/home/lzhexin/job_scripts/baseline/CCLE/mutation_files/' # dir contains mutation data
-
-file_list = ['damaging','hotspot','nonconserving','otherconserving'] # four mutation vectors
-drug_path = "/CCLE/Drug_sensitivity_AUC.csv"
-#out_path = '/Users/jerryliu/jerry_jupyter/internship/files/output/' #dir to store predictions
-Con_file='/CCLE/mutation_files/Census_allSat.csv' # Cosmic gene
-                                                                                             # list
-sample_info = "/CCLE/sample_info.csv"
-
 
 # In[3]:
 # **Source of the data**:
@@ -176,7 +163,7 @@ def out_loop(x, y_total, cl_id, out_cv_fold= 5):
         #predict on the 5th-fold set (testing set)
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            regr = ElasticNet(random_state=0, alpha= op_alpha, l1_ratio = l1_ratio, 
+            regr = ElasticNet(random_state=0, alpha= op_alpha, l1_ratio = op_l1_ratio,
                               fit_intercept = False, max_iter= 3000)
             regr.fit(x_train, y_train)
             y_pre = regr.predict(x_test)
@@ -374,6 +361,18 @@ def main():
 
 
 if __name__ == '__main__':
+    # SET FILE PATHS
+    path = '/home/lzhexin/job_scripts/baseline/CCLE/mutation_files/' # dir contains mutation data
+
+    file_list = ['damaging','hotspot','nonconserving','otherconserving'] # four mutation vectors
+    drug_path = "/CCLE/Drug_sensitivity_AUC.csv"
+    #out_path = '/Users/jerryliu/jerry_jupyter/internship/files/output/' #dir to store predictions
+    Con_file='/CCLE/mutation_files/Census_allSat.csv' # Cosmic gene
+                                                                                                 # list
+    sample_info = "/CCLE/sample_info.csv"
+
+
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--target_index", type=int,
                         help= "target index (1-based). 1-494")
@@ -383,7 +382,7 @@ if __name__ == '__main__':
                         help= "obsolute path on scratch")
 
     args = parser.parse_args()
-    
+
     dg_index = args.target_index
     out_dir = args.output
     r_path = args.r_path
