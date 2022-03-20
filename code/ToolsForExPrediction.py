@@ -136,6 +136,12 @@ def variants_extractor(vcf_path, Interval, acc_id, gzipped=False):
                                                                   acc_id = acc_id,
                                                                   chrom = Interval.chrom,
                                                                   extention = '.gz' if gzipped else '')
+    #since regions [0-98303] and [294912-393215] wouldn't be used, we only extract
+    #variants that fall within 98304-294911.
+    SEQUENCE_LENGTH = 393216
+    START =  Interval.start + int(SEQUENCE_LENGTH/4)
+    END = Interval.end - int(SEQUENCE_LENGTH/4)
+
     def get_less_noisy(alt_list, reads_list):
         af = np.array(reads_list)/sum(reads_list)
         index = get_max_min(np.abs(af[1:] - 0.5), MIN=True)
@@ -148,11 +154,13 @@ def variants_extractor(vcf_path, Interval, acc_id, gzipped=False):
             # NOTE: start in Interval object is 0-based;
             #       start in VCF file is 1-based
 
-            if  Interval.start  <= int(pos) -1 <= Interval.end:
+            if  START  <= int(pos) -1 <= END:
                 # some location might have two allels
                 # take the one with allele frequency close to 0.5 or 1
                 alt_list = alt_list.strip().split(',')
                 reads = [int(i) for i in reads.split(':')[1].split(',')]
+
+
                 # Replace '*' with '' so the sequence doesn't contain '*'
                 alt_list = ['' if i == '*' else i for i in alt_list]
                 #want_alt = alt_list[get_max_min(reads[1:], MAX=True)]
@@ -204,8 +212,12 @@ class Gene:
 
 
 def calculate_TSS(ref_pre, alt_pre):
-    "input tuype: np.array, 983*5313"
-    index_range = [ ref_pre.shape[0]//2 - 1, ref_pre.shape[0]//2, ref_pre.shape[0]//2 +1]
+    """input type: np.array, 896*5313
+        remap the relative location of TSS to the output sequence,
+        accroding to how many bps are chopped due to indels.
+    """
+    # find indels that are winthin the region
+    index_range = [ ref_pre.shape[0]//2 - 2, ref_pre.shape[0]//2 -1, ref_pre.shape[0]//2 ]
     return np.sum((alt_pre - ref_pre)[index_range], axis=0)
 
 def write_file(df, output_name):
