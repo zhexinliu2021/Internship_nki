@@ -1,9 +1,20 @@
 # /usr/bin/python3
-# usage: python3 Pre_exp.py -i acc_id -o output
 # Using Enformer ( Avsec, Žiga et al.) to predict the gene expression profile 
 # of non-coding DNAs of cancer genes, with tensorflow.
 # Date: 1/2/2022
 
+# usage: Pre_exp.py [-h] [-i ACC_ID] [-o OUTPUT] [-p SCRATCH] [-gpu GPU_ID]
+#
+# optional arguments:
+#   -h, --help            show this help message and exit
+#   -i ACC_ID, --acc_id ACC_ID
+#                         Input vcf file's dir
+#   -o OUTPUT, --output OUTPUT
+#                         output vcf file's dir (gzip file)
+#   -p SCRATCH, --scratch SCRATCH
+#                         temporary path
+#   -gpu GPU_ID, --gpu_id GPU_ID
+#                         index of gpu (0-4)
 
 import numpy as np
 import pandas as pd
@@ -104,8 +115,8 @@ def main():
             reference_prediction = model.predict_on_batch(Models.one_hot_encode(reference)[np.newaxis])['human'][0]
             alternate_prediction = model.predict_on_batch(Models.one_hot_encode(alternate)[np.newaxis])['human'][0]
 
-            # 1* 5313
-            expression = expression + tools.calculate_TSS(ref_pre=reference_prediction, alt_pre=alternate_prediction)
+            # 1* 5313`
+            expression = expression + tools.calculate_TSS(ref_pre=reference_prediction, alt_pre=alternate_prediction) 
 
         expression = pd.DataFrame(expression.reshape(-1, 5313), columns=df_targets.description, index=[gene.name])
         df = pd.concat([df, expression], axis=0)
